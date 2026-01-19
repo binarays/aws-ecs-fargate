@@ -111,13 +111,6 @@ resource "aws_ecs_cluster" "app" {
 }
 
 #################################################
-# ECR Repository
-#################################################
-resource "aws_ecr_repository" "app" {
-  name = "ecs-app-repo"
-}
-
-#################################################
 # ECS Task Definition (use existing GitHub Actions role)
 #################################################
 resource "aws_ecs_task_definition" "app" {
@@ -132,7 +125,8 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([{
     name      = "ecs-app"
-    image     = aws_ecr_repository.app.repository_url
+    # Use your existing ECR repository URL
+    image     = "621072894747.dkr.ecr.eu-north-1.amazonaws.com/ecs-app-repo:latest"
     essential = true
     portMappings = [{
       containerPort = 8080
