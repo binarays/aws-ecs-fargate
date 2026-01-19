@@ -6,45 +6,28 @@ provider "aws" {
 }
 
 #################################################
-# Existing VPC & Subnets
+# Existing VPC
 #################################################
 data "aws_vpc" "existing" {
   id = "vpc-0d265f69692c0e733"
 }
 
+#################################################
+# Existing Subnets (MAKE SURE THESE ARE DIFFERENT)
+#################################################
 data "aws_subnet" "public_1" {
   id = "subnet-0ed25ae1e9dad56f3"
 }
 
 data "aws_subnet" "public_2" {
-  id = "subnet-0ed25ae1e9dad56f3"
+  id = "subnet-09f221aab6facf516"
 }
 
 #################################################
-# Security Group
+# Existing Security Group
 #################################################
-resource "aws_security_group" "ecs_sg" {
-  name        = "ecs-sg"
-  description = "Allow HTTP traffic to ECS tasks"
-  vpc_id      = data.aws_vpc.existing.id
-
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "ecs-sg"
-  }
+data "aws_security_group" "ecs_sg" {
+  id = "sg-01547dbd554970a37" #
 }
 
 #################################################
@@ -64,7 +47,6 @@ resource "aws_ecs_task_definition" "app" {
   cpu                      = "256"
   memory                   = "512"
 
-  # Correct ECS execution role
   execution_role_arn = "arn:aws:iam::621072894747:role/ecsTaskExecutionRole"
 
   container_definitions = jsonencode([
@@ -99,7 +81,7 @@ resource "aws_ecs_service" "app" {
       data.aws_subnet.public_2.id
     ]
 
-    security_groups  = [aws_security_group.ecs_sg.id]
+    security_groups  = [data.aws_security_group.ecs_sg.id]
     assign_public_ip = true
   }
 }
