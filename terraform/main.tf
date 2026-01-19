@@ -104,16 +104,14 @@ resource "aws_security_group" "ecs_sg" {
 }
 
 #################################################
-# ECS Cluster Module (your existing)
+# ECS Cluster (manual)
 #################################################
-module "ecs" {
-  source  = "terraform-aws-modules/ecs/aws"
-  version = "5.7.0"
-  cluster_name = "ecs-fargate-cluster"
+resource "aws_ecs_cluster" "app" {
+  name = "ecs-fargate-cluster"
 }
 
 #################################################
-# ECR Repository (your existing)
+# ECR Repository
 #################################################
 resource "aws_ecr_repository" "app" {
   name = "ecs-app-repo"
@@ -129,19 +127,15 @@ resource "aws_ecs_task_definition" "app" {
   cpu                      = "256"
   memory                   = "512"
 
-  container_definitions = jsonencode([
-    {
-      name      = "ecs-app"
-      image     = "621072894747.dkr.ecr.eu-north-1.amazonaws.com/ecs-app-repo:latest"
-      essential = true
-      portMappings = [
-        {
-          containerPort = 8080
-          hostPort      = 8080
-        }
-      ]
-    }
-  ])
+  container_definitions = jsonencode([{
+    name      = "ecs-app"
+    image     = "621072894747.dkr.ecr.eu-north-1.amazonaws.com/ecs-app-repo:latest"
+    essential = true
+    portMappings = [{
+      containerPort = 8080
+      hostPort      = 8080
+    }]
+  }])
 }
 
 #################################################
@@ -149,7 +143,7 @@ resource "aws_ecs_task_definition" "app" {
 #################################################
 resource "aws_ecs_service" "app" {
   name            = "ecs-app-service"
-  cluster         = module.ecs.this_ecs_cluster_id
+  cluster         = aws_ecs_cluster.app.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
   launch_type     = "FARGATE"
@@ -159,4 +153,6 @@ resource "aws_ecs_service" "app" {
     security_groups = [aws_security_group.ecs_sg.id]
     assign_public_ip = true
   }
+
+  depends_on = [aws_internet_gateway.igw] # ensures IGW is ready before ECS service
 }
