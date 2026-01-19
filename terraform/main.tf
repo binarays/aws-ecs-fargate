@@ -121,7 +121,7 @@ resource "aws_ecs_task_definition" "app" {
   memory                   = "512"
 
   # Use GitHub Actions IAM role for ECS task execution
-  execution_role_arn = "arn:aws:iam::621072894747:role/ECS_GitHub"
+  execution_role_arn = "arn:aws:iam::621072894747:role/ecsTaskExecutionRole"
 
   container_definitions = jsonencode([{
     name      = "ecs-app"
@@ -155,3 +155,4 @@ resource "aws_ecs_service" "app" {
     aws_internet_gateway.igw
   ]
 }
+
