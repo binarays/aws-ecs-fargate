@@ -1,0 +1,261 @@
+:root {
+    --primary-gradient: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #2c2c2c;
+    overflow: hidden;
+    position: relative;
+}
+
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loader {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.1);
+    border-top: 5px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader-fade {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.cursor-dot,
+.cursor-outline {
+    pointer-events: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10000;
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background: #56CCF2;
+}
+
+.cursor-outline {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #56CCF2;
+}
+
+.envelope-wrapper {
+    position: relative;
+    width: 450px;
+    height: 300px;
+    cursor: pointer;
+    overflow: visible;
+}
+
+.envelope {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.envelope .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--primary-gradient);
+    border-top-left-radius: none;
+    border-top-right-radius: none;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    z-index: 1;
+    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.3);
+}
+
+.envelope .front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background: var(--primary-gradient);
+    clip-path: polygon(0 0, 50% 50%, 100% 0, 100% 100%, 0 100%);
+    filter: brightness(1.05);
+    border-radius: 0 0 15px 15px;
+}
+
+.envelope .flap {
+    position: absolute;
+    width: 100%;
+    height: 101%;
+    background: var(--primary-gradient);
+    clip-path: polygon(0 0, 100% 0, 50% 50%);
+    top: 0;
+    left: 0;
+    z-index: 11;
+    transform-origin: top;
+    transition: transform 0.4s ease, z-index 0.2s;
+    filter: brightness(1.1);
+}
+
+.letter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 82%;
+    height: 85%;
+    background: #ffffff;
+    border-radius: 8px;
+    z-index: 5;
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    overflow-y: hidden;
+}
+
+.letter-icons {
+    display: flex;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-bottom: 5px;
+}
+
+.letter-icons i {
+    font-size: 1.3rem;
+    color: #334155;
+    transition: color 0.3s ease;
+}
+
+.letter-icons i:hover {
+    color: #0f172a;
+}
+
+.letter-header {
+    font-size: 0.85rem;
+    color: #475569;
+    margin-bottom: 0.2rem;
+    font-weight: 500;
+}
+
+.card-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.3rem;
+    background: none;
+    -webkit-text-fill-color: initial;
+    text-align: center;
+    letter-spacing: -1px;
+}
+
+.card-text {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #64748b;
+    font-weight: 400;
+    text-align: left;
+    margin-bottom: 0.8rem;
+}
+
+.letter-footer {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 0.3rem;
+}
+
+.signature-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+
+.signature-title {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-bottom: 0;
+}
+
+.envelope-wrapper:hover .flap {
+    transform: rotateX(180deg);
+    z-index: 0;
+    transition-delay: 0s, 0.1s;
+}
+
+.envelope-wrapper:hover .letter {
+    transform: translate(-50%, -150%);
+    z-index: 12;
+    transition-delay: 0.3s;
+}
+
+.envelope-wrapper:hover .envelope {
+    transform: translateY(100px);
+}
+
+.flap {
+    transition: transform 0.4s ease 0.5s, z-index 0.1s 0.6s;
+}
+
+.letter {
+    transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0s;
+}
+
+@media (pointer: fine) {
+    body {
+        cursor: none;
+    }
+
+    a,
+    button,
+    .envelope-wrapper {
+        cursor: none;
+    }
+}
+
+.instruction-text {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 300;
+    margin-top: 2rem;
+    pointer-events: none;
+}
