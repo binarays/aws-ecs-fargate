@@ -1,0 +1,10 @@
+module "ecs" {
+  source  = "terraform-aws-modules/ecs/aws"
+  version = "5.7.0"
+
+  cluster_name = "ecs-fargate-cluster"
+}
+
+resource "aws_ecr_repository" "app" {
+  name = "ecs-app-repo"
+}
