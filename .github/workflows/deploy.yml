@@ -1,0 +1,43 @@
+name: CI/CD to ECS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::621072894747:role/ECS_GitHub
+        aws-region: ap-south-1
+
+    - name: Login to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v2
+
+    - name: Build and push Docker image
+      run: |
+        docker build -f Dockerfile -t ecs-app .
+        docker tag ecs-app:latest 621072894747.dkr.ecr.eu-north-1.amazonaws.com/ecs-app-repo:latest
+        docker push 621072894747.dkr.ecr.eu-north-1.amazonaws.com/ecs-app-repo:latest
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Init
+      run: |
+        cd terraform
+        terraform init
+    - name: Terraform Apply
+      run: |
+        cd terraform
+        terraform apply -auto-approve
