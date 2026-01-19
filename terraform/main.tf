@@ -118,32 +118,7 @@ resource "aws_ecr_repository" "app" {
 }
 
 #################################################
-# ECS Task Execution Role
-#################################################
-resource "aws_iam_role" "ecs_task_execution" {
-  name = "ecs-task-execution-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        },
-        Action = "sts:AssumeRole"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
-  role       = aws_iam_role.ecs_task_execution.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-#################################################
-# ECS Task Definition
+# ECS Task Definition (use existing GitHub Actions role)
 #################################################
 resource "aws_ecs_task_definition" "app" {
   family                   = "ecs-app"
@@ -151,16 +126,18 @@ resource "aws_ecs_task_definition" "app" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
   memory                   = "512"
-  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+
+  # Use GitHub Actions IAM role for ECS task execution
+  execution_role_arn = "arn:aws:iam::621072894747:role/ECS_GitHub"
 
   container_definitions = jsonencode([{
     name      = "ecs-app"
     image     = aws_ecr_repository.app.repository_url
     essential = true
-    portMappings = [ {
+    portMappings = [{
       containerPort = 8080
       hostPort      = 8080
-    } ]
+    }]
   }])
 }
 
