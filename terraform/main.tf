@@ -27,7 +27,7 @@ data "aws_subnet" "public_2" {
 # Existing Security Group
 #################################################
 data "aws_security_group" "ecs_sg" {
-  id = "sg-01547dbd554970a37" #
+  id = "sg-0abb169a9e0d4a232"
 }
 
 #################################################
@@ -85,3 +85,4 @@ resource "aws_ecs_service" "app" {
     assign_public_ip = true
   }
 }
+
