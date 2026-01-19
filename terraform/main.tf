@@ -118,19 +118,19 @@ resource "aws_ecr_repository" "app" {
 }
 
 #################################################
-# ECS Task Execution Role (required for Fargate)
+# ECS Task Execution Role
 #################################################
 resource "aws_iam_role" "ecs_task_execution" {
   name = "ecs-task-execution-role"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
+        Effect = "Allow",
         Principal = {
           Service = "ecs-tasks.amazonaws.com"
-        }
+        },
         Action = "sts:AssumeRole"
       }
     ]
@@ -155,7 +155,7 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([{
     name      = "ecs-app"
-    image     = "621072894747.dkr.ecr.eu-north-1.amazonaws.com/ecs-app-repo:latest"
+    image     = aws_ecr_repository.app.repository_url
     essential = true
     portMappings = [ {
       containerPort = 8080
@@ -180,5 +180,7 @@ resource "aws_ecs_service" "app" {
     assign_public_ip = true
   }
 
-  depends_on = [aws_internet_gateway.igw]
+  depends_on = [
+    aws_internet_gateway.igw
+  ]
 }
