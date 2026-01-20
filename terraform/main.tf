@@ -13,7 +13,7 @@ data "aws_vpc" "existing" {
 }
 
 #################################################
-# Existing Subnets (MAKE SURE THESE ARE DIFFERENT)
+# Existing Subnets
 #################################################
 data "aws_subnet" "public_1" {
   id = "subnet-0ed25ae1e9dad56f3"
@@ -31,7 +31,7 @@ data "aws_security_group" "ecs_sg" {
 }
 
 #################################################
-# Existing ECS Cluster
+# EXISTING ECS Cluster (IMPORTANT CHANGE)
 #################################################
 data "aws_ecs_cluster" "app" {
   cluster_name = "ecs-fargate-cluster"
@@ -85,6 +85,3 @@ resource "aws_ecs_service" "app" {
     assign_public_ip = true
   }
 }
-
-
-
