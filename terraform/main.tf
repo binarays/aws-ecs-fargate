@@ -31,14 +31,14 @@ data "aws_security_group" "ecs_sg" {
 }
 
 #################################################
-# EXISTING ECS Cluster (IMPORTANT CHANGE)
+# Existing ECS Cluster
 #################################################
 data "aws_ecs_cluster" "app" {
   cluster_name = "ecs-fargate-cluster"
 }
 
 #################################################
-# ECS Task Definition
+# ECS Task Definition (THIS IS WHAT TERRAFORM MANAGES)
 #################################################
 resource "aws_ecs_task_definition" "app" {
   family                   = "ecs-app"
@@ -58,30 +58,8 @@ resource "aws_ecs_task_definition" "app" {
       portMappings = [
         {
           containerPort = 8080
-          hostPort      = 8080
         }
       ]
     }
   ])
-}
-
-#################################################
-# ECS Service
-#################################################
-resource "aws_ecs_service" "app" {
-  name            = "ecs-app-service"
-  cluster         = data.aws_ecs_cluster.app.id
-  task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets = [
-      data.aws_subnet.public_1.id,
-      data.aws_subnet.public_2.id
-    ]
-
-    security_groups  = [data.aws_security_group.ecs_sg.id]
-    assign_public_ip = true
-  }
 }
