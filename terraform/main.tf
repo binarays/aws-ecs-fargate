@@ -70,7 +70,7 @@ resource "aws_ecs_task_definition" "app" {
 #################################################
 resource "aws_ecs_service" "app" {
   name            = "ecs-app-service"
-  cluster         = aws_ecs_cluster.app.id
+  cluster         = data.aws_ecs_cluster.app.id
   task_definition = aws_ecs_task_definition.app.arn
   desired_count   = 1
   launch_type     = "FARGATE"
@@ -85,5 +85,6 @@ resource "aws_ecs_service" "app" {
     assign_public_ip = true
   }
 }
+
 
 
