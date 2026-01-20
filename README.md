@@ -40,12 +40,19 @@ The project applies Infrastructure as Code (IaC) principles to provision scalabl
 
 ```
 .
-├── app/                 # Application source code
+├── app.py               # Application source code
 ├── Dockerfile           # Docker image configuration
+├── requirements.txt     # Essential packages
+├── webui/               # Contain the app UI
+├── static/              # Contain the external assets for the Flask app UI
 ├── terraform/           # Terraform infrastructure files
 ├── .github/workflows/   # CI/CD pipeline configuration
 └── README.md
 ```
+
+## CI/CD Pipeline
+
+CI/CD pipeline shows how code moves from idea to running app. Developers save changes, tools test files, build programs, check quality, then release updates fast, safe, often, without manual work, reducing mistakes, improving teamwork, delivering value smoothly clearly reliably continuously.
 
 ## 🌐 Purpose
 
