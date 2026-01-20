@@ -31,10 +31,10 @@ data "aws_security_group" "ecs_sg" {
 }
 
 #################################################
-# ECS Cluster
+# Existing ECS Cluster
 #################################################
-resource "aws_ecs_cluster" "app" {
-  name = "ecs-fargate-cluster"
+data "aws_ecs_cluster" "app" {
+  cluster_name = "ecs-fargate-cluster"
 }
 
 #################################################
@@ -85,4 +85,5 @@ resource "aws_ecs_service" "app" {
     assign_public_ip = true
   }
 }
+
 
