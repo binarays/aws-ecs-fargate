@@ -49,6 +49,8 @@ The project applies Infrastructure as Code (IaC) principles to provision scalabl
 ├── .github/workflows/   # CI/CD pipeline configuration
 └── README.md
 ```
+#Check the app -> 
+```http://56.228.28.76:8080```
 
 ## CI/CD Pipeline
 
